@@ -6,18 +6,12 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 contract SlabGrades {
     enum slabs {slab0_100, slab1_200, slab2_300, slab3_400, slab4_500}
 
-    // slab of user of a particular erc20
-    struct slabof_token{
-        address tokenaddress;
-        slabs currentslab;
-    }  
-
-    mapping (address => slabof_token) public slabs_ofuser;
+    mapping (address => mapping (address => uint96) ) public deposits_ofuser;
 
     receive() external payable {}
 
-    function getslab(address _tokenaddress, address _user) public view returns(slabs currentslab) {
-        uint balance = IERC20(_tokenaddress).balanceOf(_user);
+    function _getslab(address _tokenaddress, address _user) public view returns(slabs currentslab) {
+        uint96 balance = deposits_ofuser[_user][_tokenaddress];
 
         if (balance < 101) {
             currentslab = slabs.slab0_100;
@@ -34,6 +28,24 @@ contract SlabGrades {
             currentslab = slabs.slab4_500;
         }
 
+    }
+
+    function deposit(address _tokenaddress, uint96 _amount) public payable {
+        require(_amount > 0, "send more than 0 tokens");
+        IERC20(_tokenaddress).transferFrom(msg.sender, address(this), _amount);
+        
+        deposits_ofuser[msg.sender][_tokenaddress] += _amount;
+    }
+
+    function withdrawTokens(address _tokenaddress)  external {
+        uint balance = IERC20(_tokenaddress).balanceOf(msg.sender);
+        require(balance > 0, " you havent deposited to this contract");
+        
+        deposits_ofuser[msg.sender][_tokenaddress] = 0;
+
+        // sending everything, can customze id want to withdraw partially by addding extra amount to withdraw in argument and 
+        // update the deposits_ofuser state variable.
+        IERC20(_tokenaddress).transfer(payable(msg.sender),balance); 
     }
     
 }
