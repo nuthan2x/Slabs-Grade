@@ -3,7 +3,7 @@ pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract SlabGrades {
+contract SlabGradesV1 {
     enum Slabs {slab0_100, slab1_200, slab2_300, slab3_400, slab4_500}
 
     mapping (address => mapping (address => uint96) ) public deposits_ofuser;

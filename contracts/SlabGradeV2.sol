@@ -4,7 +4,7 @@ pragma solidity 0.8.17;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract SlabGrades is Ownable {
+contract SlabGradesV2 is Ownable {
 
     enum Slabs {slab0_100, slab1_200, slab2_300, slab3_400, slab4_500}
     uint[] public slablimits = [100,200,300,400,500];
