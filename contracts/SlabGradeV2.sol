@@ -2,9 +2,12 @@
 pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract SlabGrades {
+contract SlabGrades is Ownable {
+
     enum Slabs {slab0_100, slab1_200, slab2_300, slab3_400, slab4_500}
+    uint[] public slablimits = [100,200,300,400,500];
 
     mapping (address => mapping (address => uint96) ) public deposits_ofuser;
 
@@ -12,20 +15,18 @@ contract SlabGrades {
 
     function _getslab(address _tokenaddress, address _user) public view returns(Slabs currentslab) {
         uint96 balance = deposits_ofuser[_user][_tokenaddress];
+        uint[] memory _slablimits = slablimits;
 
-        if (balance < 101) {
-            currentslab = Slabs.slab0_100;
-        }
-        if (balance > 100 && balance < 201) {
-            currentslab = Slabs.slab1_200;
-        }
-        if (balance > 200 && balance < 301) {
-            currentslab = Slabs.slab2_300;
-        }
-        if (balance > 300 && balance < 401) {
-            currentslab = Slabs.slab2_300;           
-        }else {
-            currentslab = Slabs.slab4_500;
+        for (uint i = 0; i < _slablimits.length; i++) {
+            if (i != 0) {
+               if (balance > _slablimits[i - 1] && balance < _slablimits[i] + 1) {
+                  currentslab = Slabs(i);
+               }
+            }else {
+                if (balance < (_slablimits[i] + 1) ) {
+                  currentslab = Slabs(i);    // here i = 0 always  
+                } 
+            }
         }
 
     }
@@ -46,6 +47,10 @@ contract SlabGrades {
         // sending everything, can customze id want to withdraw partially by addding extra amount to withdraw in argument and 
         // update the deposits_ofuser state variable.
         IERC20(_tokenaddress).transfer(payable(msg.sender),balance); 
+    }
+
+    function updateSlablimits(uint[] calldata _newlimits) external onlyOwner {
+        slablimits = _newlimits;
     }
     
 }
