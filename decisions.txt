@@ -1,0 +1,7 @@
+1. used updatability pattern to update the slab limits whenever a owner wished to.
+2. used ownable library to achieve pattern above.
+3. emitted event to get easy front end showcase.
+4. did a reentrancy block as the data is updated first and then then transfer is done.
+5. used access restriction pattern when updating new slotlimits.
+6. used ERC20 library to get decimal data because it is variable for each token
+7. used REMIX IDE for testing/verification, openzeppelin libraries, hardhat for deployment. 

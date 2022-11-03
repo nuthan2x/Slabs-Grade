@@ -39,7 +39,6 @@ contract SlabGradesV2 is Ownable {
                 }
             }
         }
-
     }
 
     function deposit(address _tokenaddress, uint _amount) public payable {

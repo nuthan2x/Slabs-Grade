@@ -1,0 +1,7 @@
+1. used enums to reduce storage slots instead of arrays
+2. not storing the slabs on any storage as it is read using a getsslab function
+3. used 2 layers of mapping a user to (mappings of erc20tokenaddress to amount).
+     mapping instead of mapping array of structs to a user.
+4. wrote less functions , still can be minimal by removing getslabs function as we can get that data,
+     using events emitted when soeone clicks deposit button and show it in frontend,
+     but if want for validation within the contract it is mandatory to keep as it reduces gas for storage warm and cold access.
